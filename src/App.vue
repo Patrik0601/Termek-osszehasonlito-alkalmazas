@@ -1,0 +1,24 @@
+<script setup>
+  import { RouterLink, RouterView } from 'vue-router'
+  import axios from 'axios';
+  import {onMounted} from 'vue'
+  import { useShopStore } from './stores/shop';
+  const shopStore = useShopStore()
+
+  onMounted(() => {
+    axios.get('')
+    .then(res => {
+      shopStore.products = res.data      
+    })
+    
+  })
+</script>
+
+<template>
+       <nav>
+        <RouterLink to="/">Termékek</RouterLink>&nbsp;
+        <RouterLink to="/cart">Kosár</RouterLink>
+      </nav>
+  
+  <RouterView />
+</template>
