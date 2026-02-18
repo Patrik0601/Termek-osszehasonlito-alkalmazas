@@ -16,8 +16,8 @@
 
 <template>
        <nav>
-        <RouterLink to="/">Termékek</RouterLink>&nbsp;
-        <RouterLink to="/cart">Kosár</RouterLink>
+        <RouterLink to="/products">Termékek</RouterLink>&nbsp;
+        <RouterLink to="/schema">Összehasonlítás</RouterLink>
       </nav>
   
   <RouterView />
