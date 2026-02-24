@@ -1,25 +1,50 @@
 <script setup>
-    const props = defineProps({item: Object})
-    import {ref, onMounted, onUpdated} from 'vue'
-    import { useShopStore } from '@/stores/shop';
-    const store = useShopStore()
-    const product = ref({})
+import { useProductStore } from '@/stores/product'
+const props = defineProps({
+  products: Array,
+  fields: Array,
+  currency: String
+})
 
-    onMounted(() =>{
-        product.value = store.products.find(x => x.id == props.item.id)
-    })
-    onUpdated(() =>{
-        product.value = store.products.find(x => x.id == props.item.id)
-    })
+const store = useProductStore()
+
+const formatValue = (value, field) => {
+
+  if (value === null || value === undefined)
+    return "N/A"
+
+  if (field.type === "boolean")
+    return value ? "Igen" : "Nem"
+
+  if (field.type === "currency")
+    return value.toLocaleString() + " " + props.currency
+
+  return field.unit
+    ? value + " " + field.unit
+    : value
+}
+
 </script>
 
 <template>
-    <div>
-        {{ product.name }} 
-        <span class="btn btn-secondary" @click="store.changeQuantity(product.id, '-')"> - </span>
-        Mennyiség: {{ item.q }} 
-        <span class="btn btn-secondary" @click="store.changeQuantity(product.id, '+')"> + </span>
-        <span>{{ product.price * item.q }} Ft</span>
-        <button class="btn btn-outline-danger" @click="store.removeProduct(item.id)">Eltávolít</button>
-    </div>
+  <div class="table-responsive">
+    <table class="table table-bordered">
+      <thead class="table-dark">
+        <tr>
+          <th>Tulajdonság</th>
+          <th v-for="product in products" :key="product.id">{{ product.brand }}<br><small>{{ product.name }}</small>
+            <div class="mt-2">
+              <button class="btn btn-sm btn-danger" @click="store.toggleSelection(product.id)">Eltávolítás</button>
+            </div>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="field in fields":key="field.key">
+            <td><strong>{{ field.label }}</strong></td>
+            <td v-for="product in products" :key="product.id"> {{ formatValue(product[field.key], field) }} </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </template>
